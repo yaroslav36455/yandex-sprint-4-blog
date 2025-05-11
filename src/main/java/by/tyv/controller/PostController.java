@@ -1,35 +1,41 @@
 package by.tyv.controller;
 
+import by.tyv.model.view.Paging;
+import by.tyv.service.PostService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/posts")
+@RequiredArgsConstructor
 public class PostController {
-    private static final String PAGE_POSTS = "posts";
-    private static final String PAGE_POST = "post";
-    private static final String PAGE_ADD_POST = "add-post";
+    public static final String PAGE_POSTS = "posts";
+    public static final String PAGE_POST = "post";
+    public static final String PAGE_ADD_POST = "add-post";
 
+    private final PostService postService;
 
     // б) GET "posts" - список постов на странице ленты постов
     @GetMapping
-    public String getPosts() {
-
+    public String getPosts(Model model) {
+        model.addAttribute("posts", postService.getPosts());
+        model.addAttribute("paging", new Paging(1, 10, false, false));
         return PAGE_POSTS;
     }
 
     // в) GET "/posts/{id}" - страница с постом
     @GetMapping("/{id}")
-    public String getPostById(@PathVariable("id") int id) {
-
+    public String getPostById(@PathVariable("id") int id, Model model) {
+        model.addAttribute("posts", postService.getPostById(id));
         return PAGE_POST;
     }
 
     // г) GET "/posts/add" - страница добавления поста
     @GetMapping("/add")
     public String getAddPost() {
-
         return PAGE_ADD_POST;
     }
 
@@ -43,7 +49,7 @@ public class PostController {
     // ж) POST "/posts/{id}/like" - увеличение/уменьшение числа лайков поста
     @PostMapping("/{id}/like")
     public String likePost(@PathVariable("id") int id,
-                           @RequestParam("like") Boolean isLike) {
+                           @RequestParam("like") boolean isLike) {
 
         return "redirect:/posts/{id}";
     }
