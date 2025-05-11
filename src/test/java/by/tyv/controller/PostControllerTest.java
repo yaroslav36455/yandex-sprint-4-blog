@@ -72,6 +72,9 @@ public class PostControllerTest {
                 .andExpect(view().name(PostController.PAGE_POSTS))
                 .andExpect(model().attribute("paging", mockPostPage.getPaging()))
                 .andExpect(model().attribute("posts", mockPostPage.getPosts()));
+
+        Mockito.verify(postService, Mockito.only())
+                .getPostPage(null, pageNumber, pageSize);
     }
 
     @Test
@@ -90,6 +93,9 @@ public class PostControllerTest {
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andExpect(view().name(PostController.PAGE_POST))
                 .andExpect(model().attribute("post", mockPost));
+
+        Mockito.verify(postService, Mockito.only())
+                .getPostById(postId);
     }
 
     @Test
@@ -121,9 +127,13 @@ public class PostControllerTest {
                         .param("tags", tags))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrlTemplate("/posts/{id}", postId));
+
+        Mockito.verify(postService, Mockito.only())
+                .createNewPostAndGetId(title, text, image, tags);
     }
 
     @Test
+    @DisplayName("Вернуть изображение, массив байтов и статус 200")
     public void getImageById() throws Exception {
         long postId = 1L;
         byte[] image = "Контент изображения".getBytes();
@@ -135,5 +145,8 @@ public class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.IMAGE_PNG_VALUE))
                 .andExpect(content().bytes(image));
+
+        Mockito.verify(postService, Mockito.only())
+                .getImageByPostId(postId);
     }
 }
