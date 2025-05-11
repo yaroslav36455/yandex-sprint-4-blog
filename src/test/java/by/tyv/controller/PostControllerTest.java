@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -24,6 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -83,7 +85,7 @@ public class PostControllerTest {
                 .when(postService)
                 .getPostById(postId);
 
-        mockMvc.perform(get("/posts/" + postId))
+        mockMvc.perform(get("/posts/{id}", postId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andExpect(view().name(PostController.PAGE_POST))
@@ -119,5 +121,19 @@ public class PostControllerTest {
                         .param("tags", tags))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrlTemplate("/posts/{id}", postId));
+    }
+
+    @Test
+    public void getImageById() throws Exception {
+        long postId = 1L;
+        byte[] image = "Контент изображения".getBytes();
+        Mockito.doReturn(image)
+                .when(postService)
+                .getImageByPostId(postId);
+
+        mockMvc.perform(get("/posts/{id}/images", 1L))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.IMAGE_PNG_VALUE))
+                .andExpect(content().bytes(image));
     }
 }

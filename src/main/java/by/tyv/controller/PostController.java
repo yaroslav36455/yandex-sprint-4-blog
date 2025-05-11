@@ -1,13 +1,15 @@
 package by.tyv.controller;
 
-import by.tyv.model.entity.Post;
 import by.tyv.model.view.PostPage;
 import by.tyv.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import static by.tyv.util.ControllerUtil.redirect;
 
 @Controller
 @RequestMapping("/posts")
@@ -51,7 +53,14 @@ public class PostController {
                           @RequestParam("image") MultipartFile image,
                           @RequestParam("tags") String tags) {
         long id = postService.createNewPostAndGetId(title, text, image, tags);
-        return "redirect:/posts/" + id;
+        return redirect("/posts/" + id);
+    }
+
+    // е) GET "/images/{id}" -эндпоин, возвращающий набор байт картинки поста
+    @GetMapping(value = "/{id}/images", produces = MediaType.IMAGE_PNG_VALUE)
+    @ResponseBody
+    public byte[] getImageById(@PathVariable("id") long id) {
+        return postService.getImageByPostId(id);
     }
 
     // ж) POST "/posts/{id}/like" - увеличение/уменьшение числа лайков поста

@@ -26,6 +26,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public byte[] getImageByPostId(long id) {
+        return new byte[0];
+    }
+
+    @Override
     public Post getPostById(Long id) {
         return null;
     }

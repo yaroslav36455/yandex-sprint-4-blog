@@ -10,4 +10,6 @@ public interface PostService {
     PostPage getPostPage(String search, int pageNumber, int pageSize);
 
     long createNewPostAndGetId(String title, String text, MultipartFile image, String tags);
+
+    byte[] getImageByPostId(long id);
 }
