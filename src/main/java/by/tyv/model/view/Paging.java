@@ -1,5 +1,8 @@
 package by.tyv.model.view;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class Paging {
     private int pageNumber;
     private int pageSize;

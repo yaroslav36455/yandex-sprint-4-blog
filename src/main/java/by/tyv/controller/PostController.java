@@ -1,6 +1,6 @@
 package by.tyv.controller;
 
-import by.tyv.model.view.Paging;
+import by.tyv.model.view.PostPage;
 import by.tyv.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -20,9 +20,13 @@ public class PostController {
 
     // б) GET "posts" - список постов на странице ленты постов
     @GetMapping
-    public String getPosts(Model model) {
-        model.addAttribute("posts", postService.getPosts());
-        model.addAttribute("paging", new Paging(1, 10, false, false));
+    public String getPosts(Model model,
+                           @RequestParam(value = "search", required = false) String search,
+                           @RequestParam("pageNumber") int pageNumber,
+                           @RequestParam("pageSize") int pageSize) {
+        PostPage postPage = postService.getPostPage(search, pageNumber, pageSize);
+        model.addAttribute("posts", postPage.getPosts());
+        model.addAttribute("paging", postPage.getPaging());
         return PAGE_POSTS;
     }
 
