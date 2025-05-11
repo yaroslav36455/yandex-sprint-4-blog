@@ -2,12 +2,12 @@ package by.tyv.service;
 
 import by.tyv.model.entity.Post;
 import by.tyv.model.view.PostPage;
-
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface PostService {
-    List<Post> getPosts();
-    Post getPostById(int id);
+    Post getPostById(Long id);
 
     PostPage getPostPage(String search, int pageNumber, int pageSize);
+
+    long createNewPostAndGetId(String title, String text, MultipartFile image, String tags);
 }

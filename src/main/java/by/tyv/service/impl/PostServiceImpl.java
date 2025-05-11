@@ -7,8 +7,7 @@ import by.tyv.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -22,12 +21,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getPosts() {
-        return repository.findAll();
+    public long createNewPostAndGetId(String title, String text, MultipartFile image, String tags) {
+        return 0;
     }
 
     @Override
-    public Post getPostById(int id) {
+    public Post getPostById(Long id) {
         return null;
     }
 }

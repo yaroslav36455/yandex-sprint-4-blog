@@ -1,5 +1,6 @@
 package by.tyv.controller;
 
+import by.tyv.model.entity.Post;
 import by.tyv.model.view.PostPage;
 import by.tyv.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +33,8 @@ public class PostController {
 
     // в) GET "/posts/{id}" - страница с постом
     @GetMapping("/{id}")
-    public String getPostById(@PathVariable("id") int id, Model model) {
-        model.addAttribute("posts", postService.getPostById(id));
+    public String getPostById(@PathVariable("id") long id, Model model) {
+        model.addAttribute("post", postService.getPostById(id));
         return PAGE_POST;
     }
 
@@ -45,9 +46,12 @@ public class PostController {
 
     // д) POST "/posts" - добавление поста
     @PostMapping
-    public String addPost() {
-
-        return "redirect:/posts/{id}";
+    public String addPost(@RequestParam("title") String title,
+                          @RequestParam("text") String text,
+                          @RequestParam("image") MultipartFile image,
+                          @RequestParam("tags") String tags) {
+        long id = postService.createNewPostAndGetId(title, text, image, tags);
+        return "redirect:/posts/" + id;
     }
 
     // ж) POST "/posts/{id}/like" - увеличение/уменьшение числа лайков поста

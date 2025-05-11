@@ -15,8 +15,18 @@ import java.util.List;
 public class Post {
     private Long id;
     private String title;
-    private String textPreview;
+    private String image;
+    private String text;
     private List<Comment> comments;
     private int likesCount;
     private List<String> tags;
+
+
+    public List<String> getTextParts() {
+        return List.of(text);
+    }
+
+    public String getTextPreview() {
+        return text;
+    }
 }

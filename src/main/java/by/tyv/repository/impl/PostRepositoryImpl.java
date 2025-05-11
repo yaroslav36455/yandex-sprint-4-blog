@@ -12,7 +12,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> findAll() {
         return List.of(
-          new Post(1L, "Title", "Text", List.of(), 0, List.of("tag1", "tag2"))
+          new Post(1L, "Title", null, "Text", List.of(), 0, List.of("tag1", "tag2"))
         );
     }
 }
