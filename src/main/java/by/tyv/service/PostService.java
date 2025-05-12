@@ -12,4 +12,16 @@ public interface PostService {
     long createNewPostAndGetId(String title, String text, MultipartFile image, String tags);
 
     byte[] getImageByPostId(long id);
+
+    void likePost(long id, boolean like);
+
+    void updatePostById(long id, String title, String text, MultipartFile image, String tags);
+
+    void addComment(long id, String comment);
+
+    void editComment(long postId, String comment);
+
+    void deleteComment(long commentId);
+
+    void deletePost(long id);
 }

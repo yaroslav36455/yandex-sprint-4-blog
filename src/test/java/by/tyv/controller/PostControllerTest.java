@@ -108,7 +108,7 @@ public class PostControllerTest {
     }
 
     @Test
-    @DisplayName("Добавление поста, статус 200")
+    @DisplayName("Добавление поста, статус 302")
     public void getAddPost() throws Exception {
         long postId = 1L;
         String title = "Post title";
@@ -148,5 +148,144 @@ public class PostControllerTest {
 
         Mockito.verify(postService, Mockito.only())
                 .getImageByPostId(postId);
+    }
+
+    @Test
+    @DisplayName("Увеличение/уменьшение числа лайков поста, перекинуть на страницу поста, вернуть статус 302")
+    public void increaseLikeAmount() throws Exception {
+        long postId = 1L;
+        boolean like = true;
+
+        Mockito.doNothing()
+                .when(postService)
+                .likePost(postId, like);
+
+        mockMvc.perform(post("/posts/{id}/like", 1L)
+                        .param("like", String.valueOf(like)))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrlTemplate("/posts/{id}", postId));
+
+        Mockito.verify(postService, Mockito.only())
+                .likePost(postId, like);
+    }
+
+    @Test
+    @DisplayName("Вернуть страницу редактирования поста, заполнив её данными, статус 200")
+    public void editPostPage() throws Exception {
+        long postId = 1L;
+        Post mockPost = new Post(postId, "Title", null, "Text", List.of(), 5, List.of("tag1", "tag2"));
+
+        Mockito.doReturn(mockPost)
+                .when(postService)
+                .getPostById(postId);
+
+        mockMvc.perform(post("/posts/{id}/edit", postId)
+                        .param("id", String.valueOf(postId)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(view().name(PostController.PAGE_ADD_POST))
+                .andExpect(model().attribute("post", mockPost));
+
+        Mockito.verify(postService, Mockito.only())
+                .getPostById(postId);
+    }
+
+    @Test
+    @DisplayName("Редактирование поста, статус 302")
+    public void editPost() throws Exception {
+        long postId = 1L;
+        String title = "Post title";
+        String text = "Post content";
+        MockMultipartFile image = new MockMultipartFile("image", "image.png", "text/plain", "Байты изображения".getBytes());
+        String tags = "tag1 tag2";
+
+        Mockito.doNothing()
+                .when(postService)
+                .updatePostById(postId, title, text, image, tags);
+
+        mockMvc.perform(multipart("/posts/{id}", postId)
+                        .file(image)
+                        .param("title", title)
+                        .param("text", text)
+                        .param("tags", tags))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrlTemplate("/posts/{id}", postId));
+
+        Mockito.verify(postService, Mockito.only())
+                .updatePostById(postId, title, text, image, tags);
+    }
+
+    @Test
+    @DisplayName("Добавить комментарий к посту, статус 302")
+    public void addComment() throws Exception {
+        long postId = 1L;
+        String comment = "commentText";
+
+        Mockito.doNothing()
+                .when(postService)
+                .addComment(postId, comment);
+
+        mockMvc.perform(post("/posts/{id}/comments", postId)
+                        .param("comment", comment))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrlTemplate("/posts/{id}", postId));
+
+        Mockito.verify(postService, Mockito.only())
+                .addComment(postId, comment);
+    }
+
+    @Test
+    @DisplayName("Редактировать комментарий к посту, статус 302")
+    public void editComment() throws Exception {
+        long postId = 1L;
+        long commentId = 2L;
+        String comment = "commentText";
+
+        Mockito.doNothing()
+                .when(postService)
+                .editComment(commentId, comment);
+
+        mockMvc.perform(post("/posts/{id}/comments/{commentId}", postId, commentId)
+                        .param("comment", comment))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrlTemplate("/posts/{id}", postId));
+
+        Mockito.verify(postService, Mockito.only())
+                .editComment(commentId, comment);
+    }
+
+    @Test
+    @DisplayName("Удалить комментарий поста, статус 302")
+    public void deleteComment() throws Exception {
+        long postId = 1L;
+        long commentId = 2L;
+
+        Mockito.doNothing()
+                .when(postService)
+                .deleteComment(commentId);
+
+        mockMvc.perform(post("/posts/{id}/comments/{commentId}/delete", postId, commentId))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrlTemplate("/posts/{id}", postId));
+
+        Mockito.verify(postService, Mockito.only())
+                .deleteComment(commentId);
+    }
+
+    @Test
+    @DisplayName("Удалить пост, статус 302")
+    public void deletePost() throws Exception {
+        long postId = 1L;
+
+        Mockito.doNothing()
+                .when(postService)
+                .deletePost(postId);
+
+        mockMvc.perform(post("/posts/{id}/delete", postId))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/posts"));
+
+        Mockito.verify(postService, Mockito.only())
+                .deletePost(postId);
     }
 }

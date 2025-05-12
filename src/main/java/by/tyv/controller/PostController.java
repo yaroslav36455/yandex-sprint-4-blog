@@ -65,49 +65,59 @@ public class PostController {
 
     // ж) POST "/posts/{id}/like" - увеличение/уменьшение числа лайков поста
     @PostMapping("/{id}/like")
-    public String likePost(@PathVariable("id") int id,
-                           @RequestParam("like") boolean isLike) {
-
-        return "redirect:/posts/{id}";
+    public String likePost(@PathVariable("id") long id,
+                           @RequestParam("like") boolean like) {
+        postService.likePost(id, like);
+        return redirect("/posts/" + id);
     }
 
     // з) POST "/posts/{id}/edit" - страница редактирования поста
     @PostMapping("/{id}/edit")
-    public String editPostPage(@PathVariable("id") int id) {
+    public String editPostPage(Model model, @PathVariable("id") long id) {
+        model.addAttribute("post", postService.getPostById(id));
         return PAGE_ADD_POST;
     }
 
     // и) POST "/posts/{id}" - редактирование поста
     @PostMapping("/{id}")
-    public String editPost(@PathVariable("id") int id, MultipartFile file) {
-        return "redirect:/posts/{id}";
+    public String editPost(@PathVariable("id") long id,
+                           @RequestParam("title") String title,
+                           @RequestParam("text") String text,
+                           @RequestParam("image") MultipartFile image,
+                           @RequestParam("tags") String tags) {
+        postService.updatePostById(id, title, text, image, tags);
+        return redirect("/posts/" + id);
     }
 
     // к) POST "/posts/{id}/comments" - эндпоинт добавления комментария к посту
     @PostMapping("/{id}/comments")
-    public String addComment(@PathVariable("id") int id,
-                             @RequestBody String comment) {
-        return "redirect:/posts/{id}";
+    public String addComment(@PathVariable("id") long id,
+                             @RequestParam("comment") String comment) {
+        postService.addComment(id, comment);
+        return redirect("/posts/" + id);
     }
 
     // л) POST "/posts/{id}/comments/{commentId}" - эндпоинт редактирования комментария
     @PostMapping("/{id}/comments/{commentId}")
-    public String editComment(@PathVariable("id") int id,
-                              @PathVariable("commentId") int commentId,
-                              @RequestBody String comment) {
-        return "redirect:/posts/{id}";
+    public String editComment(@PathVariable("id") long id,
+                              @PathVariable("commentId") long commentId,
+                              @RequestParam("comment") String comment) {
+        postService.editComment(commentId, comment);
+        return redirect("/posts/" + id);
     }
 
     // м) POST "/posts/{id}/comments/{commentId}/delete" - эндпоинт удаления комментария
     @PostMapping("/{id}/comments/{commentId}/delete")
-    public String deleteComment(@PathVariable("id") int id,
-                                @PathVariable("commentId") int commentId) {
-        return "redirect:/posts/{id}";
+    public String deleteComment(@PathVariable("id") long id,
+                                @PathVariable("commentId") long commentId) {
+        postService.deleteComment(commentId);
+        return redirect("/posts/" + id);
     }
 
     // н) POST "/posts/{id}/delete" - эндпоинт удаления поста
     @PostMapping("/{id}/delete")
-    public String deletePost(@PathVariable("id") int id) {
-        return "redirect:/posts";
+    public String deletePost(@PathVariable("id") long id) {
+        postService.deletePost(id);
+        return redirect("/posts");
     }
 }

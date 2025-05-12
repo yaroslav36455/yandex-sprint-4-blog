@@ -29,4 +29,8 @@ public class Post {
     public String getTextPreview() {
         return text;
     }
+
+    public String getTagsAsText() {
+        return String.join(", ", tags);
+    }
 }

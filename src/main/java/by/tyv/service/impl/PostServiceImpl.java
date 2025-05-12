@@ -31,6 +31,35 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void likePost(long id, boolean like) {
+
+    }
+
+    @Override
+    public void updatePostById(long id, String title, String text, MultipartFile image, String tags) {
+    }
+
+    @Override
+    public void addComment(long id, String comment) {
+
+    }
+
+    @Override
+    public void editComment(long postId, String comment) {
+
+    }
+
+    @Override
+    public void deleteComment(long commentId) {
+
+    }
+
+    @Override
+    public void deletePost(long id) {
+
+    }
+
+    @Override
     public Post getPostById(Long id) {
         return null;
     }
