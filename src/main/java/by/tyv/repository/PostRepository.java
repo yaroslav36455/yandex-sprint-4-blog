@@ -5,5 +5,6 @@ import by.tyv.model.entity.Post;
 import java.util.List;
 
 public interface PostRepository {
-    List<Post> findAll();
+    List<Post> findAllPaging(int offset, int amount);
+    List<Post> findAllPaging(String search, int offset, int amount);
 }

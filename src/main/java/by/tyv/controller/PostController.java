@@ -1,5 +1,6 @@
 package by.tyv.controller;
 
+import by.tyv.model.view.Paging;
 import by.tyv.model.view.PostPage;
 import by.tyv.service.PostService;
 import lombok.RequiredArgsConstructor;
