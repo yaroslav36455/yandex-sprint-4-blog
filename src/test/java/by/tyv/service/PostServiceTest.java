@@ -1,11 +1,13 @@
 package by.tyv.service;
 
 import by.tyv.config.DataSourceConfiguration;
+import by.tyv.exception.DataNotFoundException;
 import by.tyv.model.entity.Post;
 import by.tyv.model.view.PostPage;
 import by.tyv.repository.PostRepository;
 import by.tyv.repository.impl.PostRepositoryImpl;
 import by.tyv.service.impl.PostServiceImpl;
+import by.tyv.util.DataUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -80,5 +82,24 @@ public class PostServiceTest {
         Assertions.assertThat(postPage.getPosts().getFirst())
                 .extracting(Post::getTitle)
                 .isEqualTo("Title-6");
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
+    @DisplayName("Найти посты по тегу, всего 3 поста, но читается вторая страница размером 2, а значит в ответе будет один пост")
+    public void findPostById() {
+        Post post = postService.getPostById(1L);
+
+        Assertions.assertThat(post)
+                .usingRecursiveAssertion()
+                .isEqualTo(DataUtil.getPost1());
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
+    @DisplayName("Найти пост по идентификатору, которого нет в базе, должен выбросить исключение DataNotFoundException")
+    public void findPostByIdNotFound() {
+        Assertions.assertThatThrownBy( () -> postService.getPostById(999L))
+                .isInstanceOf(DataNotFoundException.class);
     }
 }

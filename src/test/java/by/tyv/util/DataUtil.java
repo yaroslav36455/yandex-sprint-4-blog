@@ -1,0 +1,85 @@
+package by.tyv.util;
+
+import by.tyv.model.entity.Post;
+
+import java.util.List;
+
+public class DataUtil {
+
+    static public Post getPost1() {
+        return new Post()
+                .setId(1L)
+                .setTitle("Title-1")
+                .setImage("image path")
+                .setText("some-text")
+                .setComments(List.of())
+                .setLikesCount(1)
+                .setTags(List.of("tag1", "tag2"));
+    }
+
+    static public Post getPost2() {
+        return new Post()
+                .setId(2L)
+                .setTitle("Title-2")
+                .setImage("image path")
+                .setText("some-text")
+                .setComments(List.of())
+                .setLikesCount(2)
+                .setTags(List.of("tag3", "tag2"));
+    }
+
+    static public Post getPost3() {
+        return new Post()
+                .setId(3L)
+                .setTitle("Title-3")
+                .setImage("image path")
+                .setText("some-text")
+                .setComments(List.of())
+                .setLikesCount(3)
+                .setTags(List.of("tag1", "tag3"));
+    }
+
+    static public Post getPost4() {
+        return new Post()
+                .setId(4L)
+                .setTitle("Title-4")
+                .setImage("image path")
+                .setText("some-text")
+                .setComments(List.of())
+                .setLikesCount(4)
+                .setTags(List.of("tag1", "tag2"));
+    }
+
+    static public Post getPost5() {
+        return new Post()
+                .setId(5L)
+                .setTitle("Title-5")
+                .setImage("image path")
+                .setText("some-text")
+                .setComments(List.of())
+                .setLikesCount(5)
+                .setTags(List.of("tag1", "tag2"));
+    }
+
+    static public Post getPost6() {
+        return new Post()
+                .setId(6L)
+                .setTitle("Title-6")
+                .setImage("image path")
+                .setText("some-text")
+                .setComments(List.of())
+                .setLikesCount(6)
+                .setTags(List.of("tag1", "tag2", "tag3"));
+    }
+
+    static public Post getPost7() {
+        return new Post()
+                .setId(7L)
+                .setTitle("Title-7")
+                .setImage("image path")
+                .setText("some-text")
+                .setComments(List.of())
+                .setLikesCount(7)
+                .setTags(List.of("tag1", "tag2"));
+    }
+}

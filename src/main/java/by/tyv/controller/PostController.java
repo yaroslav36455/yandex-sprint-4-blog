@@ -1,6 +1,5 @@
 package by.tyv.controller;
 
-import by.tyv.model.view.Paging;
 import by.tyv.model.view.PostPage;
 import by.tyv.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +25,8 @@ public class PostController {
     @GetMapping
     public String getPosts(Model model,
                            @RequestParam(value = "search", required = false) String search,
-                           @RequestParam("pageNumber") int pageNumber,
-                           @RequestParam("pageSize") int pageSize) {
+                           @RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber,
+                           @RequestParam(value = "pageSize", defaultValue = "5") int pageSize) {
         PostPage postPage = postService.getPostPage(search, pageNumber, pageSize);
         model.addAttribute("posts", postPage.getPosts());
         model.addAttribute("paging", postPage.getPaging());

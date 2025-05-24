@@ -1,6 +1,7 @@
 package by.tyv.controller;
 
 import by.tyv.config.WebConfiguration;
+import by.tyv.exception.DataNotFoundException;
 import by.tyv.model.entity.Comment;
 import by.tyv.model.entity.Post;
 import by.tyv.model.view.Paging;
@@ -93,6 +94,21 @@ public class PostControllerTest {
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andExpect(view().name(PostController.PAGE_POST))
                 .andExpect(model().attribute("post", mockPost));
+
+        Mockito.verify(postService, Mockito.only())
+                .getPostById(postId);
+    }
+
+    @Test
+    @DisplayName("Вернуть страницу с постом, статус 404, если поста нет в базе")
+    public void getPostPageNotFound() throws Exception {
+        long postId = 999L;
+
+        Mockito.doThrow(DataNotFoundException.class)
+                .when(postService).getPostById(postId);
+
+        mockMvc.perform(get("/posts/{id}", postId))
+                .andExpect(status().isNotFound());
 
         Mockito.verify(postService, Mockito.only())
                 .getPostById(postId);

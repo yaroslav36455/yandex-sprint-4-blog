@@ -1,5 +1,6 @@
 package by.tyv.service.impl;
 
+import by.tyv.exception.DataNotFoundException;
 import by.tyv.model.entity.Post;
 import by.tyv.model.view.Paging;
 import by.tyv.model.view.PostPage;
@@ -81,6 +82,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getPostById(Long id) {
-        return null;
+        return repository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Post with id %d not found".formatted(id)));
     }
 }
