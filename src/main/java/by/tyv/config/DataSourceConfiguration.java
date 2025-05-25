@@ -31,13 +31,26 @@ public class DataSourceConfiguration {
         dataSource.setUsername(username);
         dataSource.setPassword(password);
 
-        log.info("Executing schema.sql...");
-        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("schema.sql"));
-        populator.execute(dataSource);
-        log.info("Schema executed");
+        generateSchema(dataSource);
+        addContent(dataSource);
 
         return dataSource;
+    }
+
+    private void generateSchema(DataSource dataSource) {
+        log.info("Executing schema.sql...");
+        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+        populator.addScript(new ClassPathResource("sql/schema.sql"));
+        populator.execute(dataSource);
+        log.info("Schema executed");
+    }
+
+    private void addContent(DataSource dataSource) {
+        log.info("Executing data.sql...");
+        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+        populator.addScript(new ClassPathResource("sql/data.sql"));
+        populator.execute(dataSource);
+        log.info("Data executed");
     }
 
     @Bean

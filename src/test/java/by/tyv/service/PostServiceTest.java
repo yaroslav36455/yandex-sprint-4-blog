@@ -4,15 +4,16 @@ import by.tyv.config.DataSourceConfiguration;
 import by.tyv.exception.DataNotFoundException;
 import by.tyv.model.entity.Post;
 import by.tyv.model.view.PostPage;
-import by.tyv.repository.PostRepository;
 import by.tyv.repository.impl.PostRepositoryImpl;
 import by.tyv.service.impl.PostServiceImpl;
 import by.tyv.util.DataUtil;
+import jakarta.servlet.ServletContext;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -25,8 +26,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class PostServiceTest {
     @Autowired
     private PostService postService;
-    @Autowired
-    private PostRepository repository;
+    @MockitoBean
+    private ServletContext servletContext;
 
     @Test
     @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
@@ -99,7 +100,33 @@ public class PostServiceTest {
     @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
     @DisplayName("Найти пост по идентификатору, которого нет в базе, должен выбросить исключение DataNotFoundException")
     public void findPostByIdNotFound() {
-        Assertions.assertThatThrownBy( () -> postService.getPostById(999L))
+        Assertions.assertThatThrownBy(() -> postService.getPostById(999L))
+                .isInstanceOf(DataNotFoundException.class);
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
+    @DisplayName("Найти пост по идентификатору, вернуть массив байтов изображения")
+    public void findPostImageByPostId() {
+        byte[] image = postService.getImageByPostId(1L);
+
+        Assertions.assertThat(image)
+                .isNotNull();
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
+    @DisplayName("Найти изображение по id поста которого нет в базе, выбросить исключение DataNotFoundException")
+    public void findPostImageByPostIdNotFound() {
+        Assertions.assertThatThrownBy(() -> postService.getImageByPostId(999L))
+                .isInstanceOf(DataNotFoundException.class);
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert_post_with_incorrect_image_name.sql"})
+    @DisplayName("Найти изображение по id поста которого нет в базе, выбросить исключение DataNotFoundException")
+    public void findPostImageByPostIdAndImageNotFound() {
+        Assertions.assertThatThrownBy(() -> postService.getImageByPostId(1L))
                 .isInstanceOf(DataNotFoundException.class);
     }
 }

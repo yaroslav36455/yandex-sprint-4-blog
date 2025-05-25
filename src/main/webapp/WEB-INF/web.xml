@@ -4,8 +4,6 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
                              https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
-  <display-name>Archetype Created Web Application</display-name>
-
   <display-name>Spring-приложение, запускаемое в контейнере сервлетов</display-name>
   <servlet>
     <!-- Имя и класс основного сервлета приложения-->

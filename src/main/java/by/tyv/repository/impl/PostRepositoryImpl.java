@@ -54,6 +54,16 @@ public class PostRepositoryImpl implements PostRepository {
         }
     }
 
+    @Override
+    public Optional<String> findPostImageNameById(long id) {
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT image FROM post WHERE id = ?",
+                    (rs, rowNum) -> rs.getString("image"), id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
 
     private Post mapToPost(ResultSet resultSet) {
 

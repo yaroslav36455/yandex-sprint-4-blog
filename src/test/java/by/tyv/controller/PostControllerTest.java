@@ -100,7 +100,7 @@ public class PostControllerTest {
     }
 
     @Test
-    @DisplayName("Вернуть страницу с постом, статус 404, если поста нет в базе")
+    @DisplayName("Вернуть страницу с постом, статус 404, поста нет в базе")
     public void getPostPageNotFound() throws Exception {
         long postId = 999L;
 
@@ -161,6 +161,21 @@ public class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.IMAGE_PNG_VALUE))
                 .andExpect(content().bytes(image));
+
+        Mockito.verify(postService, Mockito.only())
+                .getImageByPostId(postId);
+    }
+
+    @Test
+    @DisplayName("Вернуть массив байтов изображения, статус 404, изображение не найдено")
+    public void getImageByIdAndImageNotFound() throws Exception {
+        long postId = 1L;
+
+        Mockito.doThrow(DataNotFoundException.class)
+                .when(postService).getImageByPostId(postId);
+
+        mockMvc.perform(get("/posts/{id}/images", postId))
+                .andExpect(status().isNotFound());
 
         Mockito.verify(postService, Mockito.only())
                 .getImageByPostId(postId);

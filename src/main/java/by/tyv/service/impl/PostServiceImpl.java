@@ -7,14 +7,18 @@ import by.tyv.model.view.PostPage;
 import by.tyv.repository.PostRepository;
 import by.tyv.service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostServiceImpl implements PostService {
     private final PostRepository repository;
 
@@ -48,7 +52,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public byte[] getImageByPostId(long id) {
-        return new byte[0];
+        return repository.findPostImageNameById(id)
+                .map(this::readImageByName)
+                .orElseThrow(() -> new DataNotFoundException("Image for post with id %d not found".formatted(id)));
     }
 
     @Override
@@ -84,5 +90,14 @@ public class PostServiceImpl implements PostService {
     public Post getPostById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Post with id %d not found".formatted(id)));
+    }
+
+    private byte[] readImageByName(String imageName) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("images/" + imageName)) {
+            return Objects.isNull(is) ? null : is.readAllBytes();
+        } catch (IOException e) {
+            log.warn("Image with name {} not found", imageName);
+            return null;
+        }
     }
 }
