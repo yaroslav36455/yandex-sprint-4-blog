@@ -88,6 +88,16 @@ public class PostRepositoryImpl implements PostRepository {
         return keyHolder.getKey().longValue();
     }
 
+    @Override
+    public void addLike(long id) {
+        jdbcTemplate.update("UPDATE post SET likes_count = likes_count + 1 WHERE id = ?", id);
+    }
+
+    @Override
+    public void dislikeLike(long id) {
+        jdbcTemplate.update("UPDATE post SET likes_count = case when likes_count > 0 then likes_count - 1 else 0 end WHERE id = ?", id);
+    }
+
 
     private Post mapToPost(ResultSet resultSet) {
 

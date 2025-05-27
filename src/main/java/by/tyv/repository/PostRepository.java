@@ -12,4 +12,6 @@ public interface PostRepository {
     Optional<Post> findById(Long id);
     Optional<String> findPostImageNameById(long id);
     long saveNewPost(Post newPost) throws JsonProcessingException;
+    void addLike(long id);
+    void dislikeLike(long id);
 }

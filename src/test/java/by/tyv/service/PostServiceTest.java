@@ -162,4 +162,43 @@ public class PostServiceTest {
                 .extracting(Post::getTitle)
                 .isEqualTo("NewSavedPostTitle");
     }
+
+    @Test
+    @DisplayName("У поста один лайк, добавить ещё один лайк к посту")
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
+    public void addLikeToPost() {
+        postService.likePost(1L, true);
+
+        Assertions.assertThat(postRepository.findById(1L))
+                .isPresent()
+                .get()
+                .extracting(Post::getLikesCount)
+                .isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("У поста один лайк, уменьшить количество лайков на 1")
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
+    public void dislikePost() {
+        postService.likePost(1L, false);
+
+        Assertions.assertThat(postRepository.findById(1L))
+                .isPresent()
+                .get()
+                .extracting(Post::getLikesCount)
+                .isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("У поста ни одного лайка, при попытке уменьшения количества лайков на 1 ничего не произойдёт")
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert_post_without_likes.sql"})
+    public void tryDislikePostWithoutLikes() {
+        postService.likePost(1L, false);
+
+        Assertions.assertThat(postRepository.findById(1L))
+                .isPresent()
+                .get()
+                .extracting(Post::getLikesCount)
+                .isEqualTo(0);
+    }
 }

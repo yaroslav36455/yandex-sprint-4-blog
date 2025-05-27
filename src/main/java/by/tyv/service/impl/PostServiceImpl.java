@@ -75,7 +75,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void likePost(long id, boolean like) {
-
+        if (like) {
+            repository.addLike(id);
+        } else {
+            repository.dislikeLike(id);
+        }
     }
 
     @Override
