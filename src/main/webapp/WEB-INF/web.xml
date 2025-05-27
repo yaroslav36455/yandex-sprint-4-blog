@@ -20,6 +20,12 @@
       <param-value>by.tyv.config.WebConfiguration</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
+    <multipart-config>
+      <location></location>
+      <max-file-size>10485760</max-file-size> <!-- 10 MB -->
+      <max-request-size>20971520</max-request-size> <!-- 20 MB -->
+      <file-size-threshold>0</file-size-threshold>
+    </multipart-config>
   </servlet>
 
   <!-- DispatcherServlet обрабатывает все запросы -->

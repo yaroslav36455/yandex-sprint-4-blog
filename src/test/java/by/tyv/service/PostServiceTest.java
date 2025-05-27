@@ -1,23 +1,31 @@
 package by.tyv.service;
 
+import by.tyv.config.ContentPaths;
 import by.tyv.config.DataSourceConfiguration;
 import by.tyv.exception.DataNotFoundException;
 import by.tyv.model.entity.Post;
 import by.tyv.model.view.PostPage;
+import by.tyv.repository.PostRepository;
 import by.tyv.repository.impl.PostRepositoryImpl;
 import by.tyv.service.impl.PostServiceImpl;
 import by.tyv.util.DataUtil;
-import jakarta.servlet.ServletContext;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @SpringJUnitConfig(classes = {DataSourceConfiguration.class, PostServiceImpl.class, PostRepositoryImpl.class})
@@ -26,8 +34,17 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class PostServiceTest {
     @Autowired
     private PostService postService;
+    @Autowired
+    private PostRepository postRepository;
     @MockitoBean
-    private ServletContext servletContext;
+    private ContentPaths paths;
+
+    @BeforeEach
+    public void beforeEach() throws URISyntaxException {
+        Mockito.doReturn(Paths.get(getClass().getClassLoader().getResource("images").toURI()).toString())
+                .when(paths)
+                .getImagePathStr();
+    }
 
     @Test
     @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
@@ -46,11 +63,11 @@ public class PostServiceTest {
     @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
     @DisplayName("Получить все оставшиеся посты страницы")
     public void getAllPostsPagedLastPage() {
-        PostPage postPage = postService.getPostPage(null, 2, 4);
+        PostPage postPage = postService.getPostPage(null, 2, 5);
 
         Assertions.assertThat(postPage.getPosts().size()).isEqualTo(3);
         Assertions.assertThat(postPage.getPaging().getPageNumber()).isEqualTo(2);
-        Assertions.assertThat(postPage.getPaging().getPageSize()).isEqualTo(4);
+        Assertions.assertThat(postPage.getPaging().getPageSize()).isEqualTo(5);
         Assertions.assertThat(postPage.getPaging().hasPrevious()).isTrue();
         Assertions.assertThat(postPage.getPaging().hasNext()).isFalse();
     }
@@ -61,7 +78,7 @@ public class PostServiceTest {
     public void getAllPostsPagedFirstAndLastPage() {
         PostPage postPage = postService.getPostPage(null, 1, 10);
 
-        Assertions.assertThat(postPage.getPosts().size()).isEqualTo(7);
+        Assertions.assertThat(postPage.getPosts().size()).isEqualTo(8);
         Assertions.assertThat(postPage.getPaging().getPageNumber()).isEqualTo(1);
         Assertions.assertThat(postPage.getPaging().getPageSize()).isEqualTo(10);
         Assertions.assertThat(postPage.getPaging().hasPrevious()).isFalse();
@@ -82,7 +99,7 @@ public class PostServiceTest {
         Assertions.assertThat(postPage.getPaging().hasNext()).isFalse();
         Assertions.assertThat(postPage.getPosts().getFirst())
                 .extracting(Post::getTitle)
-                .isEqualTo("Title-6");
+                .isEqualTo("Title-7");
     }
 
     @Test
@@ -128,5 +145,21 @@ public class PostServiceTest {
     public void findPostImageByPostIdAndImageNotFound() {
         Assertions.assertThatThrownBy(() -> postService.getImageByPostId(1L))
                 .isInstanceOf(DataNotFoundException.class);
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/clear.sql"})
+    @DisplayName("Создать новый пост и вернуть его идентификатор")
+    public void createNewPostAndGetId() {
+        MockMultipartFile multipartFile = new MockMultipartFile("image", "image.png", "text/plain", "Байты изображения".getBytes());
+
+        postService.createNewPostAndGetId("NewSavedPostTitle", "Text", multipartFile, "tag1 tag2");
+        Optional<Post> foundPost = postRepository.findById(1L);
+
+        Assertions.assertThat(foundPost)
+                .isPresent()
+                .get()
+                .extracting(Post::getTitle)
+                .isEqualTo("NewSavedPostTitle");
     }
 }

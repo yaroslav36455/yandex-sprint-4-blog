@@ -8,8 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -62,6 +65,27 @@ public class PostRepositoryImpl implements PostRepository {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public long saveNewPost(Post newPost) throws JsonProcessingException {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        String tagsString = jsonMapper.writeValueAsString(newPost.getTags());
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    "INSERT INTO post (title, text, image, likes_count, tags) VALUES (?, ?, ?, ?, ?)",
+                    new String[] { "id" }
+            );
+            ps.setString(1, newPost.getTitle());
+            ps.setString(2, newPost.getText());
+            ps.setString(3, newPost.getImage());
+            ps.setInt(4, newPost.getLikesCount());
+            ps.setString(5, tagsString);
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().longValue();
     }
 
 

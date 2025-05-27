@@ -3,6 +3,7 @@ package by.tyv.controller;
 import by.tyv.model.view.PostPage;
 import by.tyv.service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import static by.tyv.util.ControllerUtil.redirect;
 @Controller
 @RequestMapping("/posts")
 @RequiredArgsConstructor
+@Slf4j
 public class PostController {
     public static final String PAGE_POSTS = "posts";
     public static final String PAGE_POST = "post";

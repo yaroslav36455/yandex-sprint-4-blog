@@ -1,6 +1,7 @@
 package by.tyv.repository;
 
 import by.tyv.model.entity.Post;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,4 +11,5 @@ public interface PostRepository {
     List<Post> findAllPaging(String search, int offset, int amount);
     Optional<Post> findById(Long id);
     Optional<String> findPostImageNameById(long id);
+    long saveNewPost(Post newPost) throws JsonProcessingException;
 }

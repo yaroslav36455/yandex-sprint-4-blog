@@ -1,5 +1,6 @@
 package by.tyv.service.impl;
 
+import by.tyv.config.ContentPaths;
 import by.tyv.exception.DataNotFoundException;
 import by.tyv.model.entity.Post;
 import by.tyv.model.view.Paging;
@@ -12,15 +13,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class PostServiceImpl implements PostService {
     private final PostRepository repository;
+    private final ContentPaths paths;
 
     @Override
     public PostPage getPostPage(String search, int pageNumber, int pageSize) {
@@ -47,7 +52,18 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public long createNewPostAndGetId(String title, String text, MultipartFile image, String tags) {
-        return 0;
+        String fileName = UUID.randomUUID().toString();
+        try {
+            Files.write(Paths.get(paths.getImagePathStr(), fileName), image.getBytes());
+            return repository.saveNewPost(new Post()
+                    .setTitle(title)
+                    .setText(text)
+                    .setImage(fileName)
+                    .setTags(Arrays.asList(tags.split("[ ,]+", 10))));
+        } catch (IOException e) {
+            log.error("Error while saving image: {}", fileName, e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -93,10 +109,10 @@ public class PostServiceImpl implements PostService {
     }
 
     private byte[] readImageByName(String imageName) {
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("images/" + imageName)) {
-            return Objects.isNull(is) ? null : is.readAllBytes();
+        try {
+            return Files.readAllBytes(Paths.get(paths.getImagePathStr(), imageName));
         } catch (IOException e) {
-            log.warn("Image with name {} not found", imageName);
+            log.warn("Error while reading image by name: {}", imageName, e);
             return null;
         }
     }

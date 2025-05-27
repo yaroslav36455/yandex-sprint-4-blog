@@ -65,17 +65,28 @@ public class DataUtil {
         return new Post()
                 .setId(6L)
                 .setTitle("Title-6")
-                .setImage("image path")
-                .setText("storm.png")
+                .setImage("fish.png")
+                .setText("some-text")
                 .setComments(List.of())
                 .setLikesCount(6)
-                .setTags(List.of("tag1", "tag2", "tag3"));
+                .setTags(List.of("tag1", "tag4"));
     }
 
     static public Post getPost7() {
         return new Post()
                 .setId(7L)
                 .setTitle("Title-7")
+                .setImage("storm.png")
+                .setText("some-text")
+                .setComments(List.of())
+                .setLikesCount(6)
+                .setTags(List.of("tag1", "tag2", "tag3"));
+    }
+
+    static public Post getPost8() {
+        return new Post()
+                .setId(8L)
+                .setTitle("Title-8")
                 .setImage("insects.png")
                 .setText("some-text")
                 .setComments(List.of())
