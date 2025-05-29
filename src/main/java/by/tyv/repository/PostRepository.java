@@ -11,7 +11,7 @@ public interface PostRepository {
     List<Post> findAllPaging(String search, int offset, int amount);
     Optional<Post> findById(Long id);
     Optional<String> findPostImageNameById(long id);
-    long saveNewPost(Post newPost) throws JsonProcessingException;
+    long save(Post post) throws JsonProcessingException;
     void addLike(long id);
     void dislikeLike(long id);
 }

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
@@ -200,5 +202,20 @@ public class PostServiceTest {
                 .get()
                 .extracting(Post::getLikesCount)
                 .isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("Обновить существующий пост")
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
+    public void updatePost() {
+        MockMultipartFile multipartFile = new MockMultipartFile("image", "image.txt",
+                MediaType.TEXT_PLAIN_VALUE, "Байты изображения".getBytes());
+
+        postService.updatePost(1L, "NewTitle", "NewText", multipartFile, "tag1 tag2");
+        Assertions.assertThat(postRepository.findById(1L))
+                .isPresent()
+                .get()
+                .extracting(Post::getTitle, Post::getText, Post::getTags)
+                .containsExactly("NewTitle", "NewText", List.of("tag1", "tag2"));
     }
 }

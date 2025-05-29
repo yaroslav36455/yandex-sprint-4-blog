@@ -49,12 +49,12 @@
     <table style="width:50%;margin-left:auto;margin-right:auto;">
         <tr>
             <td>
-                <form method="GET" th:action="${'/posts/'+post.getId()+'/edit'}">
+                <form method="GET" th:action="@{'/posts/'+${post.getId()}+'/edit'}">
                     <button style="float:right;">РЕДАКТИРОВАТЬ ПОСТ</button>
                 </form>
             </td>
             <td>
-                <form method="POST" th:action="${'/posts/'+post.getId()+'/delete'}">
+                <form method="POST" th:action="@{'/posts/'+${post.getId()}+'/delete'}">
                     <button style="float:right;">УДАЛИТЬ ПОСТ</button>
                 </form>
             </td>

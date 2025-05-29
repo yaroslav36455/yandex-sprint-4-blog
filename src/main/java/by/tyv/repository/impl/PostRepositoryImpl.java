@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -68,7 +69,13 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public long saveNewPost(Post newPost) throws JsonProcessingException {
+    public long save(Post post) throws JsonProcessingException {
+        return Objects.isNull(post.getId())
+                ? saveNewPost(post)
+                : updatePost(post);
+    }
+
+    private long saveNewPost(Post newPost) throws JsonProcessingException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String tagsString = jsonMapper.writeValueAsString(newPost.getTags());
 
@@ -86,6 +93,14 @@ public class PostRepositoryImpl implements PostRepository {
         }, keyHolder);
 
         return keyHolder.getKey().longValue();
+    }
+
+    private long updatePost(Post post) throws JsonProcessingException {
+        String tagsString = jsonMapper.writeValueAsString(post.getTags());
+        jdbcTemplate.update("UPDATE post SET title = ?, text = ?, image = ?, tags = ? WHERE id = ?",
+                post.getTitle(), post.getText(), post.getImage(), tagsString, post.getId());
+
+        return post.getId();
     }
 
     @Override

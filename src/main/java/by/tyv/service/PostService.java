@@ -15,7 +15,7 @@ public interface PostService {
 
     void likePost(long id, boolean like);
 
-    void updatePostById(long id, String title, String text, MultipartFile image, String tags);
+    void updatePost(long id, String title, String text, MultipartFile image, String tags);
 
     void addComment(long id, String comment);
 

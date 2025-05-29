@@ -15,10 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +52,7 @@ public class PostServiceImpl implements PostService {
         String fileName = UUID.randomUUID().toString();
         try {
             Files.write(Paths.get(paths.getImagePathStr(), fileName), image.getBytes());
-            return repository.saveNewPost(new Post()
+            return repository.save(new Post()
                     .setTitle(title)
                     .setText(text)
                     .setImage(fileName)
@@ -83,7 +80,34 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void updatePostById(long id, String title, String text, MultipartFile image, String tags) {
+    public void updatePost(long id, String title, String text, MultipartFile image, String tags) {
+        Optional<Post> foundPost = repository.findById(id);
+
+        if (foundPost.isPresent()) {
+            Post post = foundPost.get();
+
+            post.setTitle(title);
+            post.setText(text);
+            post.setTags(Arrays.asList(tags.split("[ ,]+", 10)));
+
+            try {
+                if (image.isEmpty()) {
+                    repository.save(post);
+                } else {
+                    String oldFileName = post.getImage();
+                    String newFileName = UUID.randomUUID().toString();
+                    post.setImage(newFileName);
+
+                    Files.write(Paths.get(paths.getImagePathStr(), newFileName), image.getBytes());
+                    repository.save(post);
+                    Files.deleteIfExists(Paths.get(paths.getImagePathStr(), oldFileName));
+
+                }
+            } catch (IOException e) {
+                log.error("Error while saving post: {}", post, e);
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override

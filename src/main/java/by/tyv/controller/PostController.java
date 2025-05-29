@@ -73,8 +73,8 @@ public class PostController {
         return redirect("/posts/" + id);
     }
 
-    // з) POST "/posts/{id}/edit" - страница редактирования поста
-    @PostMapping("/{id}/edit")
+    // з) GET "/posts/{id}/edit" - страница редактирования поста
+    @GetMapping("/{id}/edit")
     public String editPostPage(Model model, @PathVariable("id") long id) {
         model.addAttribute("post", postService.getPostById(id));
         return PAGE_ADD_POST;
@@ -87,7 +87,7 @@ public class PostController {
                            @RequestParam("text") String text,
                            @RequestParam("image") MultipartFile image,
                            @RequestParam("tags") String tags) {
-        postService.updatePostById(id, title, text, image, tags);
+        postService.updatePost(id, title, text, image, tags);
         return redirect("/posts/" + id);
     }
 

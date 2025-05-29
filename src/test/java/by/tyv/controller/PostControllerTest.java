@@ -210,7 +210,7 @@ public class PostControllerTest {
                 .when(postService)
                 .getPostById(postId);
 
-        mockMvc.perform(post("/posts/{id}/edit", postId)
+        mockMvc.perform(get("/posts/{id}/edit", postId)
                         .param("id", String.valueOf(postId)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
@@ -232,7 +232,7 @@ public class PostControllerTest {
 
         Mockito.doNothing()
                 .when(postService)
-                .updatePostById(postId, title, text, image, tags);
+                .updatePost(postId, title, text, image, tags);
 
         mockMvc.perform(multipart("/posts/{id}", postId)
                         .file(image)
@@ -243,7 +243,7 @@ public class PostControllerTest {
                 .andExpect(redirectedUrlTemplate("/posts/{id}", postId));
 
         Mockito.verify(postService, Mockito.only())
-                .updatePostById(postId, title, text, image, tags);
+                .updatePost(postId, title, text, image, tags);
     }
 
     @Test
