@@ -218,4 +218,13 @@ public class PostServiceTest {
                 .extracting(Post::getTitle, Post::getText, Post::getTags)
                 .containsExactly("NewTitle", "NewText", List.of("tag1", "tag2"));
     }
+
+    @Test
+    @DisplayName("Удалить пост по id")
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
+    public void deletePost() {
+        postService.deletePost(1L);
+        Assertions.assertThat(postRepository.findById(1L))
+                .isNotPresent();
+    }
 }

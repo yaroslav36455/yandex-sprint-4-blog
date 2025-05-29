@@ -14,4 +14,5 @@ public interface PostRepository {
     long save(Post post) throws JsonProcessingException;
     void addLike(long id);
     void dislikeLike(long id);
+    void deleteById(long id);
 }

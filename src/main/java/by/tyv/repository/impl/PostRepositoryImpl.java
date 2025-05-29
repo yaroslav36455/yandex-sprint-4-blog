@@ -113,6 +113,11 @@ public class PostRepositoryImpl implements PostRepository {
         jdbcTemplate.update("UPDATE post SET likes_count = case when likes_count > 0 then likes_count - 1 else 0 end WHERE id = ?", id);
     }
 
+    @Override
+    public void deleteById(long id) {
+        jdbcTemplate.update("DELETE FROM post WHERE id = ?", id);
+    }
+
 
     private Post mapToPost(ResultSet resultSet) {
 

@@ -127,7 +127,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePost(long id) {
-
+        repository.deleteById(id);
     }
 
     @Override
