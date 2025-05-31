@@ -120,8 +120,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void addComment(long id, String comment) {
-
+    public void addComment(long postId, String comment) {
+        commentRepository.addCommentByPostId(postId, comment);
     }
 
     @Override

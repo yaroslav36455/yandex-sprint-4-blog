@@ -54,4 +54,9 @@ public class CommentRepositoryImpl implements CommentRepository {
     public void deleteByPostId(long id) {
         jdbcTemplate.update("DELETE FROM comment WHERE post_id = ?", id);
     }
+
+    @Override
+    public void addCommentByPostId(long postId, String comment) {
+        jdbcTemplate.update("INSERT INTO comment (text, post_id) VALUES (?, ?)", comment, postId);
+    }
 }

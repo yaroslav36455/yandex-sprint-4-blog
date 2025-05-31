@@ -3,14 +3,17 @@ package by.tyv.service;
 import by.tyv.config.ContentPaths;
 import by.tyv.config.DataSourceConfiguration;
 import by.tyv.exception.DataNotFoundException;
+import by.tyv.model.entity.Comment;
 import by.tyv.model.entity.Post;
 import by.tyv.model.view.PostPage;
+import by.tyv.repository.CommentRepository;
 import by.tyv.repository.PostRepository;
 import by.tyv.repository.impl.CommentRepositoryImpl;
 import by.tyv.repository.impl.PostRepositoryImpl;
 import by.tyv.service.impl.PostServiceImpl;
 import by.tyv.util.DataUtil;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +43,8 @@ public class PostServiceTest {
     private PostService postService;
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private CommentRepository commentRepository;
     @MockitoBean
     private ContentPaths paths;
 
@@ -228,5 +233,20 @@ public class PostServiceTest {
         postService.deletePost(1L);
         Assertions.assertThat(postRepository.findById(1L))
                 .isNotPresent();
+    }
+
+    @Test
+    @DisplayName("Добавить комментарий к посту")
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
+    public void addCommentToPost() {
+        final long postId = 1L;
+        final String commentText = "New test comment";
+        postService.addComment(postId, commentText);
+
+        Assertions.assertThat(commentRepository.findCommentsByPostId(postId))
+                .usingRecursiveFieldByFieldElementComparator(RecursiveComparisonConfiguration.builder()
+                        .withIgnoredFields("id")
+                        .build())
+                .contains(new Comment(null, commentText, postId));
     }
 }

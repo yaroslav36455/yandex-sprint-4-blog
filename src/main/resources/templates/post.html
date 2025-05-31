@@ -103,7 +103,7 @@
         <tr>
             <td>
                 <form id="addCommentForm" th:action="@{'/posts/'+${post.getId()}+'/comments'}" method="post">
-                    <button id="addCommentButton" style="float:right;" onclick="addComment()">Добавить комментарий</button>
+                    <button id="addCommentButton" type="submit" style="float:right;" onclick="addComment()">Добавить комментарий</button>
                 </form>
             </td>
         </tr>

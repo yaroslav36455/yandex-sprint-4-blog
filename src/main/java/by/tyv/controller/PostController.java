@@ -94,7 +94,7 @@ public class PostController {
     // к) POST "/posts/{id}/comments" - эндпоинт добавления комментария к посту
     @PostMapping("/{id}/comments")
     public String addComment(@PathVariable("id") long id,
-                             @RequestParam("comment") String comment) {
+                             @RequestParam("text") String comment) {
         postService.addComment(id, comment);
         return redirect("/posts/" + id);
     }

@@ -257,7 +257,7 @@ public class PostControllerTest {
                 .addComment(postId, comment);
 
         mockMvc.perform(post("/posts/{id}/comments", postId)
-                        .param("comment", comment))
+                        .param("text", comment))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrlTemplate("/posts/{id}", postId));
 
