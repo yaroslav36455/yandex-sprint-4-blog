@@ -5,32 +5,37 @@ import by.tyv.exception.DataNotFoundException;
 import by.tyv.model.entity.Post;
 import by.tyv.model.view.Paging;
 import by.tyv.model.view.PostPage;
+import by.tyv.repository.CommentRepository;
 import by.tyv.repository.PostRepository;
 import by.tyv.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class PostServiceImpl implements PostService {
-    private final PostRepository repository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     private final ContentPaths paths;
 
     @Override
+    @Transactional(readOnly = true)
     public PostPage getPostPage(String search, int pageNumber, int pageSize) {
         int offset = pageSize * (pageNumber - 1);
         int findAmount = pageSize + 1;
         List<Post> posts =  Objects.isNull(search)
-                ? repository.findAllPaging(offset, findAmount)
-                : repository.findAllPaging(search, offset, findAmount);
+                ? postRepository.findAllPaging(offset, findAmount)
+                : postRepository.findAllPaging(search, offset, findAmount);
 
         Paging paging = new Paging();
         paging.setPageNumber(pageNumber);
@@ -44,6 +49,10 @@ public class PostServiceImpl implements PostService {
             paging.setHasNext(false);
         }
 
+        Map<Long, Post> postMap = posts.stream().collect(Collectors.toMap(Post::getId, post -> post));
+        commentRepository.findCommentsByPostId(posts.stream().map(Post::getId).toList())
+                .forEach(comment -> postMap.get(comment.getPostId()).getComments().add(comment));
+
         return new PostPage(paging, posts);
     }
 
@@ -52,7 +61,7 @@ public class PostServiceImpl implements PostService {
         String fileName = UUID.randomUUID().toString();
         try {
             Files.write(Paths.get(paths.getImagePathStr(), fileName), image.getBytes());
-            return repository.save(new Post()
+            return postRepository.save(new Post()
                     .setTitle(title)
                     .setText(text)
                     .setImage(fileName)
@@ -65,7 +74,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public byte[] getImageByPostId(long id) {
-        return repository.findPostImageNameById(id)
+        return postRepository.findPostImageNameById(id)
                 .map(this::readImageByName)
                 .orElseThrow(() -> new DataNotFoundException("Image for post with id %d not found".formatted(id)));
     }
@@ -73,15 +82,15 @@ public class PostServiceImpl implements PostService {
     @Override
     public void likePost(long id, boolean like) {
         if (like) {
-            repository.addLike(id);
+            postRepository.addLike(id);
         } else {
-            repository.dislikeLike(id);
+            postRepository.dislikeLike(id);
         }
     }
 
     @Override
     public void updatePost(long id, String title, String text, MultipartFile image, String tags) {
-        Optional<Post> foundPost = repository.findById(id);
+        Optional<Post> foundPost = postRepository.findById(id);
 
         if (foundPost.isPresent()) {
             Post post = foundPost.get();
@@ -92,14 +101,14 @@ public class PostServiceImpl implements PostService {
 
             try {
                 if (image.isEmpty()) {
-                    repository.save(post);
+                    postRepository.save(post);
                 } else {
                     String oldFileName = post.getImage();
                     String newFileName = UUID.randomUUID().toString();
                     post.setImage(newFileName);
 
                     Files.write(Paths.get(paths.getImagePathStr(), newFileName), image.getBytes());
-                    repository.save(post);
+                    postRepository.save(post);
                     Files.deleteIfExists(Paths.get(paths.getImagePathStr(), oldFileName));
 
                 }
@@ -126,13 +135,19 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public void deletePost(long id) {
-        repository.deleteById(id);
+        commentRepository.deleteByPostId(id);
+        postRepository.deleteById(id);
     }
 
     @Override
     public Post getPostById(Long id) {
-        return repository.findById(id)
+        return postRepository.findById(id)
+                .map(post -> {
+                    post.setComments(commentRepository.findCommentsByPostId(id));
+                    return post;
+                })
                 .orElseThrow(() -> new DataNotFoundException("Post with id %d not found".formatted(id)));
     }
 

@@ -1,5 +1,6 @@
 package by.tyv.util;
 
+import by.tyv.model.entity.Comment;
 import by.tyv.model.entity.Post;
 
 import java.util.List;
@@ -12,7 +13,9 @@ public class DataUtil {
                 .setTitle("Title-1")
                 .setImage("trees.png")
                 .setText("some-text")
-                .setComments(List.of())
+                .setComments(List.of(
+                        new Comment(1L, "Comment 1 for post 1", 1L),
+                        new Comment(2L, "Comment 2 for post 1", 1L)))
                 .setLikesCount(1)
                 .setTags(List.of("tag1", "tag2"));
     }
@@ -23,7 +26,10 @@ public class DataUtil {
                 .setTitle("Title-2")
                 .setImage("sedana.png")
                 .setText("some-text")
-                .setComments(List.of())
+                .setComments(List.of(
+                        new Comment(3L, "Comment 1 for post 2", 2L),
+                        new Comment(4L, "Comment 2 for post 2", 2L),
+                        new Comment(5L, "Comment 2 for post 2", 2L)))
                 .setLikesCount(2)
                 .setTags(List.of("tag3", "tag2"));
     }
@@ -45,7 +51,14 @@ public class DataUtil {
                 .setTitle("Title-4")
                 .setImage("mushrooms.png")
                 .setText("some-text")
-                .setComments(List.of())
+                .setComments(List.of(
+                        new Comment(6L,  "Comment 1 for post 4", 4L),
+                        new Comment(7L,  "Comment 2 for post 4", 4L),
+                        new Comment(8L,  "Comment 3 for post 4", 4L),
+                        new Comment(9L,  "Comment 4 for post 4", 4L),
+                        new Comment(10L, "Comment 5 for post 4", 4L),
+                        new Comment(11L, "Comment 6 for post 4", 4L),
+                        new Comment(12L, "Comment 7 for post 4", 4L)))
                 .setLikesCount(4)
                 .setTags(List.of("tag1", "tag2"));
     }
@@ -78,7 +91,7 @@ public class DataUtil {
                 .setTitle("Title-7")
                 .setImage("storm.png")
                 .setText("some-text")
-                .setComments(List.of())
+                .setComments(List.of(new Comment(13L, "Comment 1 for post 7", 7L)))
                 .setLikesCount(6)
                 .setTags(List.of("tag1", "tag2", "tag3"));
     }

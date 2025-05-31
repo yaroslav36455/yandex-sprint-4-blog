@@ -8,7 +8,6 @@ import by.tyv.model.view.Paging;
 import by.tyv.model.view.PostPage;
 import by.tyv.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,7 +54,7 @@ public class PostControllerTest {
     public void getPosts() throws Exception {
         int pageNumber = 1;
         int pageSize = 10;
-        List<Comment> firstPostComments = List.of(new Comment(1L, "commentText"), new Comment(2L, "commentText 2"));
+        List<Comment> firstPostComments = List.of(new Comment(1L, "commentText-1", 1L), new Comment(2L, "commentText-2", 1L));
         PostPage mockPostPage = new PostPage(new Paging(1, 2, false, false),
                 List.of(
                         new Post(1L, "Title", null, "Text", firstPostComments, 5, List.of("tag1", "tag2")),
@@ -83,7 +82,7 @@ public class PostControllerTest {
     @DisplayName("Вернуть страницу с постом, статус 200")
     public void getPostPage() throws Exception {
         long postId = 1L;
-        List<Comment> postComments = List.of(new Comment(1L, "commentText"), new Comment(2L, "commentText 2"));
+        List<Comment> postComments = List.of(new Comment(1L, "commentText-1", 1L), new Comment(2L, "commentText-2", 1L));
         Post mockPost = new Post(postId, "Title", null, "Text", postComments, 5, List.of("tag1", "tag2"));
 
         Mockito.doReturn(mockPost)

@@ -6,6 +6,7 @@ import by.tyv.exception.DataNotFoundException;
 import by.tyv.model.entity.Post;
 import by.tyv.model.view.PostPage;
 import by.tyv.repository.PostRepository;
+import by.tyv.repository.impl.CommentRepositoryImpl;
 import by.tyv.repository.impl.PostRepositoryImpl;
 import by.tyv.service.impl.PostServiceImpl;
 import by.tyv.util.DataUtil;
@@ -30,7 +31,8 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
-@SpringJUnitConfig(classes = {DataSourceConfiguration.class, PostServiceImpl.class, PostRepositoryImpl.class})
+@SpringJUnitConfig(classes = {DataSourceConfiguration.class, PostServiceImpl.class,
+        PostRepositoryImpl.class, CommentRepositoryImpl.class})
 @EnableTransactionManagement
 @Sql(scripts = "/sql/schema.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 public class PostServiceTest {
@@ -111,7 +113,7 @@ public class PostServiceTest {
         Post post = postService.getPostById(1L);
 
         Assertions.assertThat(post)
-                .usingRecursiveAssertion()
+                .usingRecursiveComparison()
                 .isEqualTo(DataUtil.getPost1());
     }
 

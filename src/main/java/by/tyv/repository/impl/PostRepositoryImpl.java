@@ -15,10 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,7 +25,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> findAllPaging(int offset, int amount) {
-        return jdbcTemplate.query("SELECT * FROM post ORDER BY id LIMIT ? OFFSET ?", rs -> {
+        return jdbcTemplate.query("SELECT p.id, p.title, p.image, p.text, p.likes_count, p.tags FROM post p ORDER BY id LIMIT ? OFFSET ?", rs -> {
             List<Post> posts = new ArrayList<>();
             while (rs.next()) {
                 posts.add(mapToPost(rs));
@@ -39,7 +36,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> findAllPaging(String search, int offset, int amount) {
-        return jdbcTemplate.query("SELECT * FROM post WHERE tags LIKE ? ORDER BY id LIMIT ? OFFSET ?", rs -> {
+        return jdbcTemplate.query("SELECT p.id, p.title, p.image, p.text, p.likes_count, p.tags FROM post p WHERE tags LIKE ? ORDER BY id LIMIT ? OFFSET ?", rs -> {
             List<Post> posts = new ArrayList<>();
             while (rs.next()) {
                 posts.add(mapToPost(rs));
@@ -50,8 +47,10 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Optional<Post> findById(Long id) {
+        final String sql = "SELECT p.id, p.title, p.image, p.text, p.likes_count, p.tags FROM post p WHERE p.id = ?";
+
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM post WHERE id = ?",
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql,
                     (rs, rowNum) -> mapToPost(rs), id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -118,7 +117,6 @@ public class PostRepositoryImpl implements PostRepository {
         jdbcTemplate.update("DELETE FROM post WHERE id = ?", id);
     }
 
-
     private Post mapToPost(ResultSet resultSet) {
 
         try {
@@ -130,7 +128,7 @@ public class PostRepositoryImpl implements PostRepository {
                     resultSet.getString("title"),
                     resultSet.getString("image"),
                     resultSet.getString("text"),
-                    List.of(),
+                    new ArrayList<>(),
                     resultSet.getInt("likes_count"),
                     tagList);
         } catch (SQLException e) {

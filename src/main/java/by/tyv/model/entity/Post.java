@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Accessors(chain = true)
+@ToString
 public class Post {
     private Long id;
     private String title;

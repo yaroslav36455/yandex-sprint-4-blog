@@ -89,20 +89,20 @@
         </tr>
         <tr th:each="comment : ${post.getComments()}">
             <td style="border-left:thin solid grey;">
-                <form method="POST" th:action="${'/posts/'+post.getId()+'/comments/'+comment.getId()}">
+                <form method="POST" th:action="@{'/posts/'+${post.getId()}+'/comments/'+${comment.getId()}}">
                     <span th:id="${'comment'+comment.getId()}" th:text="${comment.getText()}"></span>
                     <button th:id="${comment.getId()}" onclick="editComment(this.id)" style="float:right;">&#9998;</button>
                 </form>
             </td>
             <td>
-                <form method="POST" th:action="${'/posts/'+post.getId()+'/comments/'+comment.getId()+'/delete'}">
+                <form method="POST" th:action="@{'/posts/'+${post.getId()}+'/comments/'+${comment.getId()}+'/delete'}">
                     <button style="float:right;">&#10007;</button>
                 </form>
             </td>
         </tr>
         <tr>
             <td>
-                <form id="addCommentForm" th:action="${'/posts/'+post.getId()+'/comments'}" method="post">
+                <form id="addCommentForm" th:action="@{'/posts/'+${post.getId()}+'/comments'}" method="post">
                     <button id="addCommentButton" style="float:right;" onclick="addComment()">Добавить комментарий</button>
                 </form>
             </td>
