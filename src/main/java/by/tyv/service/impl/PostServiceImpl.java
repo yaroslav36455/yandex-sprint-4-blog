@@ -133,7 +133,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deleteComment(long commentId) {
-
+        jdbcTemplate.update("DELETE FROM comment WHERE id = ?", commentId);
     }
 
     @Override

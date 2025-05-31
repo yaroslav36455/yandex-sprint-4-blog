@@ -258,12 +258,23 @@ public class PostServiceTest {
         final String newCommentText = "Edited test comment";
         postService.editComment(commentId, newCommentText);
 
-        Optional<Comment> actualComment = commentRepository.findCommentById(commentId);
+        Optional<Comment> actualComment = commentRepository.findById(commentId);
         Assertions.assertThat(actualComment).isPresent();
         Assertions.assertThat(actualComment.get())
                 .usingRecursiveComparison(RecursiveComparisonConfiguration.builder()
                         .withIgnoredFields("postId")
                         .build())
                 .isEqualTo(new Comment(commentId, newCommentText, null));
+    }
+
+    @Test
+    @DisplayName("Удаление комментария")
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
+    public void deleteCommentToPost() {
+        final long commentId = 1L;
+        postService.deleteComment(commentId);
+
+        Optional<Comment> actualComment = commentRepository.findById(commentId);
+        Assertions.assertThat(actualComment).isNotPresent();;
     }
 }
