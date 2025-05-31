@@ -134,7 +134,7 @@ public class PostServiceTest {
     @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
     @DisplayName("Найти пост по идентификатору, вернуть массив байтов изображения")
     public void findPostImageByPostId() {
-        byte[] image = postService.getImageByPostId(1L);
+        byte[] image = postService.getImageByPostId(3L);
 
         Assertions.assertThat(image)
                 .isNotNull();
@@ -230,8 +230,8 @@ public class PostServiceTest {
     @DisplayName("Удалить пост по id")
     @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
     public void deletePost() {
-        postService.deletePost(1L);
-        Assertions.assertThat(postRepository.findById(1L))
+        postService.deletePost(2L);
+        Assertions.assertThat(postRepository.findById(2L))
                 .isNotPresent();
     }
 

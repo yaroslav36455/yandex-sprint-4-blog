@@ -139,8 +139,19 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void deletePost(long id) {
+        Optional<String> imageName = postRepository.findPostImageNameById(id);
         commentRepository.deleteByPostId(id);
         postRepository.deleteById(id);
+
+        imageName.ifPresent(fileName -> {
+            try {
+                Files.deleteIfExists(Paths.get(paths.getImagePathStr(), fileName));
+            } catch (IOException e) {
+                log.error("Error while deleting image: {}", fileName, e);
+                throw new RuntimeException(e);
+            }
+            log.info("Image {} deleted", fileName);
+        });
     }
 
     @Override
