@@ -4,6 +4,7 @@ import by.tyv.model.entity.Comment;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CommentRepository {
@@ -11,4 +12,5 @@ public interface CommentRepository {
     List<Comment> findCommentsByPostId(List<Long> postIds);
     void deleteByPostId(long id);
     void addCommentByPostId(long postId, String comment);
+    Optional<Comment> findCommentById(long id);
 }

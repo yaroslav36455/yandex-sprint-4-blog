@@ -249,4 +249,21 @@ public class PostServiceTest {
                         .build())
                 .contains(new Comment(null, commentText, postId));
     }
+
+    @Test
+    @DisplayName("Редактирование комментария поста")
+    @Sql(scripts = {"/sql/clear.sql", "/sql/insert.sql"})
+    public void editCommentToPost() {
+        final long commentId = 1L;
+        final String newCommentText = "Edited test comment";
+        postService.editComment(commentId, newCommentText);
+
+        Optional<Comment> actualComment = commentRepository.findCommentById(commentId);
+        Assertions.assertThat(actualComment).isPresent();
+        Assertions.assertThat(actualComment.get())
+                .usingRecursiveComparison(RecursiveComparisonConfiguration.builder()
+                        .withIgnoredFields("postId")
+                        .build())
+                .isEqualTo(new Comment(commentId, newCommentText, null));
+    }
 }

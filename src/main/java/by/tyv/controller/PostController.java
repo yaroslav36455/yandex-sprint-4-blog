@@ -103,7 +103,7 @@ public class PostController {
     @PostMapping("/{id}/comments/{commentId}")
     public String editComment(@PathVariable("id") long id,
                               @PathVariable("commentId") long commentId,
-                              @RequestParam("comment") String comment) {
+                              @RequestParam("text") String comment) {
         postService.editComment(commentId, comment);
         return redirect("/posts/" + id);
     }

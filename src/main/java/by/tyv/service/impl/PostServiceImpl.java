@@ -10,6 +10,7 @@ import by.tyv.repository.PostRepository;
 import by.tyv.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final ContentPaths paths;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     @Transactional(readOnly = true)
@@ -125,8 +127,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void editComment(long postId, String comment) {
-
+    public void editComment(long commentId, String comment) {
+        jdbcTemplate.update("UPDATE comment SET text = ? WHERE id = ?", comment, commentId);
     }
 
     @Override

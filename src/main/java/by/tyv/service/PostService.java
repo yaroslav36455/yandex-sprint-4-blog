@@ -19,7 +19,7 @@ public interface PostService {
 
     void addComment(long id, String comment);
 
-    void editComment(long postId, String comment);
+    void editComment(long commentId, String comment);
 
     void deleteComment(long commentId);
 

@@ -4,10 +4,14 @@ import by.tyv.model.entity.Comment;
 import by.tyv.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -58,5 +62,19 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public void addCommentByPostId(long postId, String comment) {
         jdbcTemplate.update("INSERT INTO comment (text, post_id) VALUES (?, ?)", comment, postId);
+    }
+
+    @Override
+    public Optional<Comment> findCommentById(long id) {
+        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT id, text, post_id FROM comment WHERE id = ?", new RowMapper<Comment>() {
+            @Override
+            public Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Comment(
+                        rs.getLong("id"),
+                        rs.getString("text"),
+                        rs.getLong("post_id")
+                );
+            }
+        }, id));
     }
 }
