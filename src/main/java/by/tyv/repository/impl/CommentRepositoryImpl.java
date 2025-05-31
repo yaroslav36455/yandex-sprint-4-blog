@@ -1,6 +1,6 @@
 package by.tyv.repository.impl;
 
-import by.tyv.model.entity.Comment;
+import by.tyv.model.bo.Comment;
 import by.tyv.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

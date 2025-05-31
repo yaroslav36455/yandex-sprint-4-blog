@@ -1,7 +1,7 @@
 package by.tyv.util;
 
-import by.tyv.model.entity.Comment;
-import by.tyv.model.entity.Post;
+import by.tyv.model.bo.Comment;
+import by.tyv.model.bo.Post;
 
 import java.util.List;
 

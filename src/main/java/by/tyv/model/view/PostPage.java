@@ -1,6 +1,6 @@
 package by.tyv.model.view;
 
-import by.tyv.model.entity.Post;
+import by.tyv.model.bo.Post;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

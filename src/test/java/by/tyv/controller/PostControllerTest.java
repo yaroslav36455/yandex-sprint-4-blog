@@ -2,8 +2,8 @@ package by.tyv.controller;
 
 import by.tyv.config.WebConfiguration;
 import by.tyv.exception.DataNotFoundException;
-import by.tyv.model.entity.Comment;
-import by.tyv.model.entity.Post;
+import by.tyv.model.bo.Comment;
+import by.tyv.model.bo.Post;
 import by.tyv.model.view.Paging;
 import by.tyv.model.view.PostPage;
 import by.tyv.service.PostService;

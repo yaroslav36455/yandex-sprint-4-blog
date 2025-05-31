@@ -78,8 +78,8 @@
                 </p>
             </td>
         </tr>
-        <tr th:each="textPart : ${post.getTextParts()}">
-            <td th:text="${textPart}"></td>
+        <tr th:each="paragraph : ${post.getParagraphs()}">
+            <td th:text="${paragraph}"></td>
         </tr>
         <tr>
             <td>

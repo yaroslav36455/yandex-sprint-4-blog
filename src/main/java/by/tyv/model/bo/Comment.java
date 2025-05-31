@@ -1,4 +1,4 @@
-package by.tyv.model.entity;
+package by.tyv.model.bo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package by.tyv.repository.impl;
 
-import by.tyv.model.entity.Post;
+import by.tyv.model.bo.Post;
 import by.tyv.repository.PostRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

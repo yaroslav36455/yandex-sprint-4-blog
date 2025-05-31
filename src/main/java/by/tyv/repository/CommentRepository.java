@@ -1,6 +1,6 @@
 package by.tyv.repository;
 
-import by.tyv.model.entity.Comment;
+import by.tyv.model.bo.Comment;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package by.tyv.service;
 
-import by.tyv.model.entity.Post;
+import by.tyv.model.bo.Post;
 import by.tyv.model.view.PostPage;
 import org.springframework.web.multipart.MultipartFile;
 

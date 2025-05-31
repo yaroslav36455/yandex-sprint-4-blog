@@ -1,10 +1,13 @@
-package by.tyv.model.entity;
+package by.tyv.model.bo;
 
 
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Setter
 @Getter
@@ -14,6 +17,8 @@ import java.util.List;
 @Accessors(chain = true)
 @ToString
 public class Post {
+    static private final Pattern ONE_PARAGRAPH_THREE_STRING = Pattern.compile("^([^.!?]*[.!?]){1,3}");
+
     private Long id;
     private String title;
     private String image;
@@ -23,12 +28,16 @@ public class Post {
     private List<String> tags;
 
 
-    public List<String> getTextParts() {
-        return List.of(text);
+    public List<String> getParagraphs() {
+        return Arrays.asList(text.split("\\v+"));
     }
 
     public String getTextPreview() {
-        return text;
+        Matcher matcher = ONE_PARAGRAPH_THREE_STRING.matcher(getParagraphs().getFirst());
+
+        return matcher.find()
+                ? matcher.group().trim()
+                : text;
     }
 
     public String getTagsAsText() {
