@@ -1,6 +1,6 @@
 package by.tyv.controller;
 
-import by.tyv.config.WebConfiguration;
+import by.tyv.config.CommonSpringBootTest;
 import by.tyv.exception.DataNotFoundException;
 import by.tyv.model.bo.Comment;
 import by.tyv.model.bo.Post;
@@ -10,15 +10,11 @@ import by.tyv.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -29,10 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(SpringExtension.class)
-@SpringJUnitConfig(classes = WebConfiguration.class)
-@WebAppConfiguration
-public class PostControllerTest {
+public class PostControllerTest extends CommonSpringBootTest {
 
     @MockitoBean
     private PostService postService;

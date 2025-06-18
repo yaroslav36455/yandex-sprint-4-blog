@@ -35,7 +35,7 @@ public class PostServiceImpl implements PostService {
     public PostPage getPostPage(String search, int pageNumber, int pageSize) {
         int offset = pageSize * (pageNumber - 1);
         int findAmount = pageSize + 1;
-        List<Post> posts =  Objects.isNull(search)
+        List<Post> posts = Objects.isNull(search)
                 ? postRepository.findAllPaging(offset, findAmount)
                 : postRepository.findAllPaging(search, offset, findAmount);
 

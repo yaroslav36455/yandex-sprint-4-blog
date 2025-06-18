@@ -81,7 +81,7 @@ public class PostRepositoryImpl implements PostRepository {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO post (title, text, image, likes_count, tags) VALUES (?, ?, ?, ?, ?)",
-                    new String[] { "id" }
+                    new String[]{"id"}
             );
             ps.setString(1, newPost.getTitle());
             ps.setString(2, newPost.getText());
@@ -133,8 +133,7 @@ public class PostRepositoryImpl implements PostRepository {
                     tagList);
         } catch (SQLException e) {
             throw new RuntimeException("Unexpected SQL Exception", e);
-        }
-        catch (JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             throw new RuntimeException("Unexpected Jackson mapping Exception", e);
         }
     }

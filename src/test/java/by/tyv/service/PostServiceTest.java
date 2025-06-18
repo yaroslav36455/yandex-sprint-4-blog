@@ -1,44 +1,33 @@
 package by.tyv.service;
 
+import by.tyv.config.CommonSpringBootTest;
 import by.tyv.config.ContentPaths;
-import by.tyv.config.DataSourceConfiguration;
 import by.tyv.exception.DataNotFoundException;
 import by.tyv.model.bo.Comment;
 import by.tyv.model.bo.Post;
 import by.tyv.model.view.PostPage;
 import by.tyv.repository.CommentRepository;
 import by.tyv.repository.PostRepository;
-import by.tyv.repository.impl.CommentRepositoryImpl;
-import by.tyv.repository.impl.PostRepositoryImpl;
-import by.tyv.service.impl.PostServiceImpl;
 import by.tyv.util.DataUtil;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
-@ExtendWith(SpringExtension.class)
-@SpringJUnitConfig(classes = {DataSourceConfiguration.class, PostServiceImpl.class,
-        PostRepositoryImpl.class, CommentRepositoryImpl.class})
-@EnableTransactionManagement
 @Sql(scripts = "/sql/schema.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-public class PostServiceTest {
+public class PostServiceTest extends CommonSpringBootTest {
     @Autowired
     private PostService postService;
     @Autowired
@@ -275,6 +264,6 @@ public class PostServiceTest {
         postService.deleteComment(commentId);
 
         Optional<Comment> actualComment = commentRepository.findById(commentId);
-        Assertions.assertThat(actualComment).isNotPresent();;
+        Assertions.assertThat(actualComment).isNotPresent();
     }
 }
