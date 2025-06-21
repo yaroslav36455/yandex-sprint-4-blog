@@ -56,31 +56,34 @@ set CONTENT_PATH=C:\path\to\content
 ### Без использования тестового контента
 ```bash
 gradle build
-java -jar ./build/libs/yandex-sprint-4-blog-2.0.0.jar
+java -DDB_USERNAME=<username> -DDB_PASSWORD=<password> -jar ./build/libs/yandex-sprint-4-blog-2.0.0.jar
 ```
 
 ### С использованием тестового контента
 ```bash
 gradle build -Pinitdata
-java -jar ./build/libs/yandex-sprint-4-blog-2.0.0.jar --spring.profiles.active=initdata
+java -DDB_USERNAME=<username> -DDB_PASSWORD=<password> -jar ./build/libs/yandex-sprint-4-blog-2.0.0.jar --spring.profiles.active=initdata
 ```
 
-_Если отсутствует Gradle в системе, то вызывать `./gradlew` вместо `gradle`_ 
-
-
+_Если отсутствует Gradle в системе, то вызывать `./gradlew` вместо `gradle`_.
+_Копирование контента в директорию ***CONTENT_PATH*** происходит при выполнении ***gradle*** задачи **build**_.
+_Очистка директории ***CONTENT_PATH*** происходит при выполнении ***gradle*** задачи ***clean***_
+---
 ## Windows:
 ### Без использования тестового контента
 ```bash
 gradle build
-java -jar build\libs\yandex-sprint-4-blog-2.0.0.jar
+java -DDB_USERNAME=<username> -DDB_PASSWORD=<password> -jar build\libs\yandex-sprint-4-blog-2.0.0.jar
 
 ```
 
 ### С использованием тестового контента
 ```bash
 gradle build -Pinitdata
-java -jar build\libs\yandex-sprint-4-blog-2.0.0.jar --spring.profiles.active=initdata
+java -DDB_USERNAME=<username> -DDB_PASSWORD=<password> -jar build\libs\yandex-sprint-4-blog-2.0.0.jar --spring.profiles.active=initdata
 
 ```
 
-_Если отсутствует Gradle в системе, то вызывать `.\gradlew` вместо `gradle`_
+_Если отсутствует Gradle в системе, то вызывать `.\gradlew` вместо `gradle`._
+_Копирование контента в директорию ***CONTENT_PATH*** происходит при выполнении ***gradle*** задачи **build**_.
+_Очистка директории ***CONTENT_PATH*** происходит при выполнении ***gradle*** задачи ***clean***_

@@ -1,11 +1,13 @@
+
+
 spring:
   application:
     name: yandex-sprint-4-blog
     content-path: ${CONTENT_PATH}
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
-    username: test
-    password: test
+    url: jdbc:h2:mem:blog_db;DB_CLOSE_DELAY=-1
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   sql:
     init:
       mode: always
