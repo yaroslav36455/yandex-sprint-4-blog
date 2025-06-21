@@ -32,35 +32,55 @@
 
 ## Требования
 * Java 21
-* Gradle 8.13 (желательно)
 
-## Сборка
-Сборка проекта
-#### Если присутствует Gradle в системе:
+## Сборка и запуск
+
+### Перед сборкой необходимо задать переменную окружения ***CONTENT_PATH*** где будет располагаться контент
+*Эта директория должна быть предварительно создана!*
+
+***Linux/macOS***
+
+```bash
+export CONTENT_PATH=/path/to/content
+```
+
+***Windows***
+
+```shell
+set CONTENT_PATH=C:\path\to\content
+```
+
+### Есть два режима сборки и запуска - с тестовым контентом и без тестового контента
+
+## Linux:
+### Без использования тестового контента
 ```bash
 gradle build
-```
-
-#### Если отсутствует Gradle в системе:
-* Linux:
-```bash
-./gradlew build
-```
-
-* Windows:
-```bash
-gradlew.bat build
-```
-
-## Запуск
-
-Должна присутствовать переменная окружения "CONTENT_PATH" с указанием полного пути, где будут располагаться файлы изображений, либо путь можно задать во время запуска
-
-***Если "CONTENT_PATH" присутствует:***
-```bash
 java -jar ./build/libs/yandex-sprint-4-blog-2.0.0.jar
 ```
-***Если "CONTENT_PATH" отсутствует:***
+
+### С использованием тестового контента
 ```bash
-java -DCONTENT_PATH=<...> -jar ./build/libs/yandex-sprint-4-blog-2.0.0.jar
+gradle build -Pinitdata
+java -jar ./build/libs/yandex-sprint-4-blog-2.0.0.jar --spring.profiles.active=initdata
 ```
+
+_Если отсутствует Gradle в системе, то вызывать `./gradlew` вместо `gradle`_ 
+
+
+## Windows:
+### Без использования тестового контента
+```bash
+gradle build
+java -jar build\libs\yandex-sprint-4-blog-2.0.0.jar
+
+```
+
+### С использованием тестового контента
+```bash
+gradle build -Pinitdata
+java -jar build\libs\yandex-sprint-4-blog-2.0.0.jar --spring.profiles.active=initdata
+
+```
+
+_Если отсутствует Gradle в системе, то вызывать `.\gradlew` вместо `gradle`_

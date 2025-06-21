@@ -34,6 +34,53 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+tasks.register('copyContent', Copy) {
+	if (project.hasProperty('initdata')) {
+		def contentDir = System.getenv("CONTENT_PATH")
+		if (contentDir == null) {
+			throw GradleException("CONTENT_PATH не задан")
+		}
+
+		from("images")
+		into(contentDir)
+		logger.lifecycle("Контент успешно скопирован в директорию: " + contentDir)
+	}
+}
+
+tasks.named('build') {
+	dependsOn 'copyContent'
+}
+
+tasks.register('cleanContent') {
+	doLast {
+		def contentDir = System.getenv("CONTENT_PATH")
+		if (contentDir != null) {
+			def dir = file(contentDir)
+			if (dir.exists() && dir.isDirectory()) {
+				if (dir.listFiles().length > 0) {
+					dir.listFiles().each { file ->
+						if (file.isDirectory()) {
+							file.deleteDir()
+						} else {
+							file.delete()
+						}
+					}
+					logger.lifecycle("Содержимое директории '${contentDir}' очищено")
+				} else {
+					logger.lifecycle("Директория '${contentDir}' пуста")
+				}
+			} else {
+				logger.lifecycle("Директория '${contentDir}' не найдена или не является директорией")
+			}
+		}
+	}
+}
+
+
+tasks.named('clean') {
+	dependsOn 'cleanContent'
+}
+
 bootJar {
 	launchScript()
 }
