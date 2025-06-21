@@ -68,7 +68,7 @@ java -DDB_USERNAME=<username> -DDB_PASSWORD=<password> -jar ./build/libs/yandex-
 _Если отсутствует Gradle в системе, то вызывать `./gradlew` вместо `gradle`_.
 _Копирование контента в директорию ***CONTENT_PATH*** происходит при выполнении ***gradle*** задачи **build**_.
 _Очистка директории ***CONTENT_PATH*** происходит при выполнении ***gradle*** задачи ***clean***_
----
+
 ## Windows:
 ### Без использования тестового контента
 ```bash
